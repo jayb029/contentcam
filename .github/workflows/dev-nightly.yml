@@ -1,0 +1,68 @@
+name: Dev Nightly
+
+on:
+  push:
+    branches:
+      - dev
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dev-nightly
+  cancel-in-progress: false
+
+jobs:
+  build-nightly:
+    runs-on: macos-15
+
+    steps:
+      - name: Check out dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Increment and commit build number
+        id: version
+        run: |
+          git pull --rebase origin dev
+          current_build="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' ContentCam/Info.plist)"
+          next_build="$((current_build + 1))"
+          scripts/set-build-number.sh "$next_build"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ContentCam/Info.plist ContentCam.xcodeproj/project.pbxproj
+          git commit -m "Bump build number to ${next_build} [skip ci]"
+          git push origin HEAD:dev
+
+          version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' ContentCam/Info.plist)"
+          echo "build_number=$next_build" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Build universal macOS app
+        run: scripts/build-release.sh
+
+      - name: Upload nightly artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ContentCam-nightly-${{ steps.version.outputs.build_number }}
+          path: build/release/*.zip
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Replace Nightly prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          BUILD_NUMBER: ${{ steps.version.outputs.build_number }}
+          COMMIT_SHA: ${{ steps.version.outputs.commit_sha }}
+        run: |
+          gh release delete nightly --cleanup-tag --yes || true
+          gh release create nightly build/release/*.zip \
+            --target "$COMMIT_SHA" \
+            --title "ContentCam Nightly" \
+            --notes "Automated dev build: version ${VERSION} (${BUILD_NUMBER})." \
+            --prerelease
