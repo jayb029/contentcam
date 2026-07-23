@@ -47,6 +47,6 @@ All frame processing uses AVFoundation, Core Image, and Vision on your Mac. Cont
 This repository uses two long-lived branches:
 
 - `dev` creates a new **Nightly** prerelease on every push. The workflow increments the build number shown in parentheses in **ContentCam > About ContentCam**, commits that change to `dev`, builds the app, and replaces the `nightly` prerelease.
-- `main` creates releases only when the **Main Release** workflow is run manually. The workflow asks for a version such as `1.0` or `1.2.3`, commits that marketing version to `main` when it changed, builds the app, and publishes a tagged GitHub Release.
+- `main` creates releases only when the **Main Release** workflow is run manually. The workflow asks for a version such as `1.0` or `1.2.3`, commits that marketing version to `main` when it changed, builds the app, and publishes a tagged GitHub Release. Its release notes include every commit since the previous stable release, identified by its full commit SHA.
 
 Both workflows build an unsigned universal macOS app and attach a ZIP to the workflow run and GitHub Release. Code signing and notarization require an Apple Developer certificate and are not configured in this repository.
