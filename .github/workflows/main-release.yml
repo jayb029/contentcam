@@ -102,16 +102,16 @@ jobs:
               printf -- '- [`%s`](https://github.com/%s/commit/%s) %s\n' \
                 "$sha" "$GITHUB_REPOSITORY" "$sha" "$subject"
             done < <(git log --reverse --format='%H%x09%s' "$range")
-          } > release-notes.md
+          } > commit-changelog.md
 
-      - name: Build universal macOS app
+      - name: Build universal macOS DMG
         run: scripts/build-release.sh
 
       - name: Upload release artifact
         uses: actions/upload-artifact@v6
         with:
           name: ContentCam-${{ inputs.version }}-${{ steps.metadata.outputs.build_number }}
-          path: build/release/*.zip
+          path: build/release/*.dmg
           if-no-files-found: error
 
       - name: Publish GitHub Release
@@ -119,9 +119,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ inputs.version }}
           COMMIT_SHA: ${{ steps.metadata.outputs.commit_sha }}
+          BUILD_NUMBER: ${{ steps.metadata.outputs.build_number }}
         run: |
-          gh release create "v${VERSION}" build/release/*.zip \
+          release_notes="$(scripts/main-release-notes.sh \
+            "$VERSION" \
+            "$BUILD_NUMBER" \
+            "$COMMIT_SHA" \
+            "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}")"
+          release_notes="${release_notes}"$'\n\n'"$(< commit-changelog.md)"
+
+          gh release create "v${VERSION}" build/release/*.dmg \
             --target "$COMMIT_SHA" \
             --title "ContentCam ${VERSION}" \
-            --notes "$(< release-notes.md)" \
+            --notes "$release_notes" \
             --generate-notes
