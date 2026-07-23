@@ -9,6 +9,8 @@ final class StudioModel: ObservableObject {
     @Published var isMirrored = true { didSet { syncSettings() } }
     @Published var facePadding: CGFloat = 0.18 { didSet { syncSettings() } }
     @Published var showGuides = true
+    @Published var cropScale: CGFloat = 1 { didSet { syncSettings() } }
+    @Published var cropOffset: CGSize = .zero { didSet { syncSettings() } }
 
     let camera = CameraEngine()
 
@@ -21,7 +23,9 @@ final class StudioModel: ObservableObject {
             outputFormat: outputFormat,
             faceEffect: faceEffect,
             isMirrored: isMirrored,
-            facePadding: facePadding
+            facePadding: facePadding,
+            cropScale: cropScale,
+            cropOffset: cropOffset
         )
     }
 

@@ -156,7 +156,10 @@ struct StudioView: View {
                 camera: studio.camera,
                 showGuides: studio.showGuides,
                 aspectRatio: studio.outputFormat.aspectRatio,
-                cornerRadius: studio.cornerRadius
+                cornerRadius: studio.cornerRadius,
+                cropScale: $studio.cropScale,
+                cropOffset: $studio.cropOffset,
+                allowsCropAdjustment: true
             )
             .frame(
                 maxWidth: min(proxy.size.width - 64, 900),

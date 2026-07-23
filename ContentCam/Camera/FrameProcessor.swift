@@ -19,7 +19,12 @@ final class FrameProcessor {
             image = mirror(image)
         }
 
-        image = crop(image, to: settings.outputFormat.aspectRatio)
+        image = crop(
+            image,
+            to: settings.outputFormat.aspectRatio,
+            scale: settings.cropScale,
+            offset: settings.cropOffset
+        )
 
         if settings.faceEffect != .none {
             updateFaces(in: image)
@@ -45,18 +50,39 @@ final class FrameProcessor {
         ).scaledBy(x: -1, y: 1))
     }
 
-    private func crop(_ image: CIImage, to targetAspect: CGFloat) -> CIImage {
+    private func crop(
+        _ image: CIImage,
+        to targetAspect: CGFloat,
+        scale: CGFloat,
+        offset: CGSize
+    ) -> CIImage {
         let source = image.extent
         let sourceAspect = source.width / source.height
-        let rect: CGRect
+        let baseSize: CGSize
 
         if sourceAspect > targetAspect {
             let width = source.height * targetAspect
-            rect = CGRect(x: source.midX - width / 2, y: source.minY, width: width, height: source.height)
+            baseSize = CGSize(width: width, height: source.height)
         } else {
             let height = source.width / targetAspect
-            rect = CGRect(x: source.minX, y: source.midY - height / 2, width: source.width, height: height)
+            baseSize = CGSize(width: source.width, height: height)
         }
+
+        let safeScale = min(max(scale, 1), 4)
+        let cropSize = CGSize(
+            width: baseSize.width / safeScale,
+            height: baseSize.height / safeScale
+        )
+        let maximumShiftX = max(0, (source.width - cropSize.width) / 2)
+        let maximumShiftY = max(0, (source.height - cropSize.height) / 2)
+        let horizontalPosition = min(max(offset.width, -1), 1)
+        let verticalPosition = min(max(offset.height, -1), 1)
+        let rect = CGRect(
+            x: source.midX - cropSize.width / 2 - horizontalPosition * maximumShiftX,
+            y: source.midY - cropSize.height / 2 + verticalPosition * maximumShiftY,
+            width: cropSize.width,
+            height: cropSize.height
+        )
 
         return normalized(image.cropped(to: rect))
     }

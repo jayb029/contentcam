@@ -79,4 +79,6 @@ struct FrameSettings {
     var faceEffect: FaceEffect = .none
     var isMirrored = true
     var facePadding: CGFloat = 0.18
+    var cropScale: CGFloat = 1
+    var cropOffset: CGSize = .zero
 }
