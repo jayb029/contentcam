@@ -42,14 +42,14 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Build universal macOS app
+      - name: Build universal macOS DMG
         run: scripts/build-release.sh
 
       - name: Upload nightly artifact
         uses: actions/upload-artifact@v6
         with:
           name: ContentCam-nightly-${{ steps.version.outputs.build_number }}
-          path: build/release/*.zip
+          path: build/release/*.dmg
           if-no-files-found: error
           retention-days: 14
 
@@ -61,8 +61,8 @@ jobs:
           COMMIT_SHA: ${{ steps.version.outputs.commit_sha }}
         run: |
           gh release delete nightly --cleanup-tag --yes || true
-          gh release create nightly build/release/*.zip \
+          gh release create nightly build/release/*.dmg \
             --target "$COMMIT_SHA" \
             --title "ContentCam Nightly" \
-            --notes "Automated dev build: version ${VERSION} (${BUILD_NUMBER})." \
+            --notes "Automated development build of ContentCam ${VERSION} (${BUILD_NUMBER}). Download the DMG, open it, and drag ContentCam to Applications. This unsigned build is intended for testing the latest dev changes and may be less stable than a main release." \
             --prerelease
