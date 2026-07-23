@@ -12,10 +12,12 @@ struct ContentCamApp: App {
 
     var body: some Scene {
         Window("ContentCam", id: "studio") {
-            StudioView()
-                .environmentObject(studio)
-                .environmentObject(updates)
-                .frame(minWidth: 1_080, minHeight: 700)
+            ChangelogPresentingView {
+                StudioView()
+                    .environmentObject(studio)
+                    .environmentObject(updates)
+                    .frame(minWidth: 1_080, minHeight: 700)
+            }
         }
         .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 1_280, height: 800)
@@ -56,6 +58,22 @@ struct ContentCamApp: App {
         .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 960, height: 540)
         .commandsRemoved()
+    }
+}
+
+private struct ChangelogPresentingView<Content: View>: View {
+    @Environment(\.openWindow) private var openWindow
+    private let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        content
+            .onReceive(NotificationCenter.default.publisher(for: .showContentCamChangelog)) { _ in
+                openWindow(id: "changelog")
+            }
     }
 }
 

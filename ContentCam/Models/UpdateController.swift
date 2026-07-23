@@ -34,7 +34,7 @@ enum UpdateChannel: String, CaseIterable, Identifiable {
     }
 }
 
-final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate {
+final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate, SPUStandardUserDriverDelegate {
     private static let automaticCheckInterval: TimeInterval = 30 * 60
 
     @Published private(set) var channel: UpdateChannel
@@ -55,7 +55,7 @@ final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate {
         updaterController = SPUStandardUpdaterController(
             startingUpdater: false,
             updaterDelegate: self,
-            userDriverDelegate: nil
+            userDriverDelegate: self
         )
         updaterController.updater.publisher(for: \.canCheckForUpdates)
             .receive(on: RunLoop.main)
@@ -102,6 +102,15 @@ final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate {
     func feedURLString(for updater: SPUUpdater) -> String? {
         channel.feedURLString
     }
+
+    func standardUserDriverShowVersionHistory(for item: SUAppcastItem) {
+        InMemoryLog.shared.info("Changelog opened from update check", category: "Updates")
+        NotificationCenter.default.post(name: .showContentCamChangelog, object: nil)
+    }
+}
+
+extension Notification.Name {
+    static let showContentCamChangelog = Notification.Name("ShowContentCamChangelog")
 }
 
 struct CheckForUpdatesCommand: View {
