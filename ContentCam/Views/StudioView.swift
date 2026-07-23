@@ -110,10 +110,21 @@ struct StudioView: View {
 
             Spacer(minLength: 8)
 
-            CameraStatus(camera: studio.camera)
-                .padding(14)
+            if cameraHasError {
+                CameraStatus(camera: studio.camera)
+                    .padding(14)
+            }
         }
         .background(Color(nsColor: NSColor(calibratedWhite: 0.095, alpha: 1)))
+    }
+
+    private var cameraHasError: Bool {
+        switch studio.camera.state {
+        case .denied, .failed:
+            true
+        default:
+            false
+        }
     }
 
     private var toolbar: some View {
