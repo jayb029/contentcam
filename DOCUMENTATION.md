@@ -31,9 +31,9 @@ Choose the Production or Nightly update channel in **ContentCam > Settings**. Yo
 - **Production** receives stable releases intended for everyday use.
 - **Nightly** receives the newest in-progress build and may be less stable. Each Nightly is published as a separate prerelease so its notes and download remain available.
 
-When an update is available, the update popup includes the changelog for the exact version ContentCam is offering to download.
+When an update is available, the update popup includes a short ContentCam introduction and the commits for the exact version being offered. Commit links use short SHAs for readability and open the full commit on GitHub; **View the full changelog** opens that release’s detailed notes.
 
-Repository maintainers create Nightlies on demand from **Actions > Nightly Release** by entering the source branch to build. Any existing branch can be selected, including `main`; the update-metadata-only `nightly-feed` branch is excluded.
+Repository maintainers create Nightlies on demand from **Actions > Nightly Release**. Select the source branch with GitHub’s **Use workflow from** control, then run the workflow. Any branch containing the workflow can be selected, including `main`; the update-metadata-only `nightly-feed` branch is excluded.
 
 ## Diagnostic logs
 

@@ -2,12 +2,6 @@ name: Nightly Release
 
 on:
   workflow_dispatch:
-    inputs:
-      branch:
-        description: Source branch to build (for example, main or a feature branch)
-        required: true
-        default: main
-        type: string
 
 permissions:
   contents: write
@@ -24,12 +18,12 @@ jobs:
       - name: Check out source branch
         uses: actions/checkout@v5
         with:
-          ref: ${{ inputs.branch }}
+          ref: ${{ github.ref_name }}
           fetch-depth: 0
 
       - name: Validate source branch
         env:
-          BRANCH_NAME: ${{ inputs.branch }}
+          BRANCH_NAME: ${{ github.ref_name }}
         run: |
           if ! git check-ref-format --branch "$BRANCH_NAME" >/dev/null 2>&1; then
             echo "Branch name '${BRANCH_NAME}' is not valid." >&2
@@ -49,7 +43,7 @@ jobs:
       - name: Assign and commit build number
         id: version
         env:
-          BRANCH_NAME: ${{ inputs.branch }}
+          BRANCH_NAME: ${{ github.ref_name }}
         run: |
           git pull --rebase origin "$BRANCH_NAME"
           next_build="$(date -u +%Y%m%d%H%M%S)"
@@ -116,6 +110,13 @@ jobs:
             "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
             "Commits since ${comparison_label}" > commit-changelog.md
 
+          scripts/commit-changelog.sh \
+            "$baseline_ref" \
+            "$COMMIT_SHA" \
+            "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
+            "Commits since ${comparison_label}" \
+            short > in-app-commit-changelog.md
+
           scripts/nightly-release-notes.sh \
             "$VERSION" \
             "$BUILD_NUMBER" \
@@ -126,11 +127,17 @@ jobs:
           printf '\n' >> nightly-release-notes.md
           cat commit-changelog.md >> nightly-release-notes.md
 
+          scripts/in-app-release-notes.sh \
+            "ContentCam Nightly ${BUILD_NUMBER}" \
+            in-app-commit-changelog.md \
+            "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/nightly-${BUILD_NUMBER}" \
+            > in-app-release-notes.md
+
       - name: Build universal macOS DMG
         run: scripts/build-release.sh
 
       - name: Add release notes to the in-app update
-        run: scripts/attach-release-notes.sh build/release nightly-release-notes.md
+        run: scripts/attach-release-notes.sh build/release in-app-release-notes.md
 
       - name: Generate signed Nightly update feed
         env:
@@ -141,7 +148,7 @@ jobs:
             build/release \
             build/release/appcast-nightly.xml \
             "$DOWNLOAD_URL_PREFIX" \
-            "${{ github.server_url }}/${{ github.repository }}/releases"
+            "${{ github.server_url }}/${{ github.repository }}/releases/tag/nightly-${{ steps.version.outputs.build_number }}"
 
       - name: Upload nightly artifact
         uses: actions/upload-artifact@v6

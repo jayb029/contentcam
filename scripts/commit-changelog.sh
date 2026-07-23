@@ -6,9 +6,15 @@ from_ref="${1:-}"
 to_ref="${2:-}"
 repository_url="${3:-}"
 heading="${4:-}"
+sha_style="${5:-full}"
 
 if [[ -z "$to_ref" || -z "$repository_url" || -z "$heading" ]]; then
-  echo "Usage: commit-changelog [from-ref] <to-ref> <repository-url> <heading>" >&2
+  echo "Usage: commit-changelog [from-ref] <to-ref> <repository-url> <heading> [full|short]" >&2
+  exit 1
+fi
+
+if [[ "$sha_style" != "full" && "$sha_style" != "short" ]]; then
+  echo "Commit SHA style must be 'full' or 'short'." >&2
   exit 1
 fi
 
@@ -37,8 +43,13 @@ printf '## %s\n\n' "$heading"
 
 commit_count=0
 while IFS=$'\t' read -r sha subject; do
+  display_sha="$sha"
+  if [[ "$sha_style" == "short" ]]; then
+    display_sha="${sha:0:7}"
+  fi
+
   printf -- '- [`%s`](%s/commit/%s) %s\n' \
-    "$sha" "$repository_url" "$sha" "$subject"
+    "$display_sha" "$repository_url" "$sha" "$subject"
   commit_count=$((commit_count + 1))
 done < <(git log --reverse --format='%H%x09%s' "$range")
 

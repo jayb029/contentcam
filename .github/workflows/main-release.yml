@@ -100,6 +100,13 @@ jobs:
             "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
             "$heading" > commit-changelog.md
 
+          scripts/commit-changelog.sh \
+            "$previous_tag" \
+            "$COMMIT_SHA" \
+            "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
+            "$heading" \
+            short > in-app-commit-changelog.md
+
           scripts/main-release-notes.sh \
             "${{ inputs.version }}" \
             "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' ContentCam/Info.plist)" \
@@ -108,11 +115,17 @@ jobs:
           printf '\n' >> release-notes.md
           cat commit-changelog.md >> release-notes.md
 
+          scripts/in-app-release-notes.sh \
+            "ContentCam ${{ inputs.version }}" \
+            in-app-commit-changelog.md \
+            "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/v${{ inputs.version }}" \
+            > in-app-release-notes.md
+
       - name: Build universal macOS DMG
         run: scripts/build-release.sh
 
       - name: Add release notes to the in-app update
-        run: scripts/attach-release-notes.sh build/release release-notes.md
+        run: scripts/attach-release-notes.sh build/release in-app-release-notes.md
 
       - name: Generate signed Production update feed
         env:
@@ -123,7 +136,7 @@ jobs:
             build/release \
             build/release/appcast.xml \
             "$DOWNLOAD_URL_PREFIX" \
-            "${{ github.server_url }}/${{ github.repository }}/releases"
+            "${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ inputs.version }}"
 
       - name: Upload release artifact
         uses: actions/upload-artifact@v6
