@@ -28,7 +28,8 @@ final class CameraEngine: NSObject, ObservableObject {
     private var isDisplayUpdateScheduled = false
     private var configured = false
 
-    override init() {
+    init(preferredDeviceID: String? = nil) {
+        selectedDeviceID = preferredDeviceID
         super.init()
         InMemoryLog.shared.info("Camera engine initialized", category: "Camera")
         refreshDevices()
@@ -49,9 +50,11 @@ final class CameraEngine: NSObject, ObservableObject {
         let available = discovery.devices
         InMemoryLog.shared.info("Camera discovery found \(available.count) device(s)", category: "Camera")
         DispatchQueue.main.async { [weak self] in
-            self?.devices = available
-            if self?.selectedDeviceID == nil {
-                self?.selectedDeviceID = available.first?.uniqueID
+            guard let self else { return }
+            self.devices = available
+            if self.selectedDeviceID == nil
+                || !available.contains(where: { $0.uniqueID == self.selectedDeviceID }) {
+                self.selectedDeviceID = available.first?.uniqueID
             }
         }
     }

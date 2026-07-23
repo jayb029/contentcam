@@ -38,7 +38,7 @@ struct ContentCamApp: App {
         }
 
         Settings {
-            PreferencesView(updates: updates)
+            PreferencesView(studio: studio, updates: updates)
         }
 
         Window("ContentCam Documentation", id: "documentation") {

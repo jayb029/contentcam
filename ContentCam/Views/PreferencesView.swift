@@ -1,11 +1,20 @@
 import SwiftUI
 
 struct PreferencesView: View {
+    @ObservedObject var studio: StudioModel
     @ObservedObject var updates: UpdateController
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         Form {
+            Section("Startup") {
+                Toggle("Restore previous session when ContentCam opens", isOn: $studio.restoresPreviousSession)
+
+                Text("Keeps your camera, canvas, framing, and effects exactly as you left them.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
+
             Section("Software Updates") {
                 Picker("Update channel", selection: updateChannel) {
                     ForEach(UpdateChannel.allCases) { channel in
@@ -31,7 +40,7 @@ struct PreferencesView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(width: 440, height: 280)
+        .frame(width: 440, height: 380)
     }
 
     private var updateChannel: Binding<UpdateChannel> {
