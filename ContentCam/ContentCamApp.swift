@@ -15,9 +15,15 @@ struct ContentCamApp: App {
         .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 1_280, height: 800)
         .commands {
+            PreferencesCommands()
+
             CommandGroup(after: .help) {
                 CheckForUpdatesCommand(updates: updates)
             }
+        }
+
+        Settings {
+            PreferencesView(updates: updates)
         }
 
         WindowGroup("ContentCam — Clean Output", id: "clean-output") {
