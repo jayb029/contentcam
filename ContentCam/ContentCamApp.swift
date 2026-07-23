@@ -11,7 +11,7 @@ struct ContentCamApp: App {
     }
 
     var body: some Scene {
-        WindowGroup("ContentCam") {
+        Window("ContentCam", id: "studio") {
             StudioView()
                 .environmentObject(studio)
                 .environmentObject(updates)
@@ -40,7 +40,7 @@ struct ContentCamApp: App {
             PreferencesView(updates: updates)
         }
 
-        WindowGroup("ContentCam — Clean Output", id: "clean-output") {
+        Window("ContentCam — Clean Output", id: "clean-output") {
             OutputWindowView()
                 .environmentObject(studio)
         }
