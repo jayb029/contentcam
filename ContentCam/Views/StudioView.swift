@@ -30,11 +30,10 @@ struct StudioView: View {
         .onAppear {
             InMemoryLog.shared.info("Studio window appeared", category: "Lifecycle")
             studio.start()
+            updates.start()
             if !hasCompletedOnboarding {
                 InMemoryLog.shared.info("First-run guide presented", category: "Guide")
                 isShowingGuide = true
-            } else {
-                updates.start()
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in

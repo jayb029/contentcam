@@ -35,10 +35,13 @@ enum UpdateChannel: String, CaseIterable, Identifiable {
 }
 
 final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate {
+    private static let automaticCheckInterval: TimeInterval = 30 * 60
+
     @Published private(set) var channel: UpdateChannel
     @Published private(set) var canCheckForUpdates = false
 
     private var updaterController: SPUStandardUpdaterController!
+    private var automaticCheckTimer: AnyCancellable?
     private var hasStarted = false
     override init() {
         let storedChannel = UserDefaults.standard.string(forKey: UpdateChannel.defaultsKey)
@@ -64,6 +67,16 @@ final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate {
         hasStarted = true
         InMemoryLog.shared.info("Updater started", category: "Updates")
         updaterController.startUpdater()
+        checkForUpdatesInBackground()
+        automaticCheckTimer = Timer.publish(
+            every: Self.automaticCheckInterval,
+            on: .main,
+            in: .common
+        )
+        .autoconnect()
+        .sink { [weak self] _ in
+            self?.checkForUpdatesInBackground()
+        }
     }
 
     func select(_ channel: UpdateChannel) {
@@ -79,6 +92,11 @@ final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate {
     func checkForUpdates() {
         InMemoryLog.shared.info("Manual update check requested", category: "Updates")
         updaterController.checkForUpdates(nil)
+    }
+
+    private func checkForUpdatesInBackground() {
+        InMemoryLog.shared.info("Automatic update check requested", category: "Updates")
+        updaterController.updater.checkForUpdatesInBackground()
     }
 
     func feedURLString(for updater: SPUUpdater) -> String? {
