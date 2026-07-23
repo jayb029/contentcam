@@ -21,7 +21,10 @@ final class CameraEngine: NSObject, ObservableObject {
     private let frameQueue = DispatchQueue(label: "com.jay.contentcam.frames", qos: .userInteractive)
     private let processor = FrameProcessor()
     private let settingsLock = NSLock()
+    private let displayLock = NSLock()
     private var frameSettings = FrameSettings()
+    private var pendingDisplayImage: CGImage?
+    private var isDisplayUpdateScheduled = false
     private var configured = false
 
     override init() {
@@ -140,6 +143,35 @@ final class CameraEngine: NSObject, ObservableObject {
     private func fail(_ message: String) {
         DispatchQueue.main.async { [weak self] in self?.state = .failed(message) }
     }
+
+    private func scheduleForDisplay(_ image: CGImage) {
+        displayLock.lock()
+        // SwiftUI can render more slowly than capture produces frames. Replace
+        // the pending frame instead of retaining one main-queue block per frame.
+        pendingDisplayImage = image
+
+        guard !isDisplayUpdateScheduled else {
+            displayLock.unlock()
+            return
+        }
+
+        isDisplayUpdateScheduled = true
+        displayLock.unlock()
+
+        DispatchQueue.main.async { [weak self] in
+            self?.displayLatestImage()
+        }
+    }
+
+    private func displayLatestImage() {
+        displayLock.lock()
+        let latestImage = pendingDisplayImage
+        pendingDisplayImage = nil
+        isDisplayUpdateScheduled = false
+        displayLock.unlock()
+
+        image = latestImage
+    }
 }
 
 extension CameraEngine: AVCaptureVideoDataOutputSampleBufferDelegate {
@@ -148,13 +180,15 @@ extension CameraEngine: AVCaptureVideoDataOutputSampleBufferDelegate {
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
     ) {
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        autoreleasepool {
+            guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
-        settingsLock.lock()
-        let settings = frameSettings
-        settingsLock.unlock()
+            settingsLock.lock()
+            let settings = frameSettings
+            settingsLock.unlock()
 
-        guard let processed = processor.process(pixelBuffer: pixelBuffer, settings: settings) else { return }
-        DispatchQueue.main.async { [weak self] in self?.image = processed }
+            guard let processed = processor.process(pixelBuffer: pixelBuffer, settings: settings) else { return }
+            scheduleForDisplay(processed)
+        }
     }
 }
