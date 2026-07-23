@@ -81,6 +81,8 @@ enum FaceEffect: String, CaseIterable, Identifiable {
 
 struct FrameSettings {
     var outputAspectRatio: CGFloat = 16 / 9
+    var showsCropEditor = false
+    var customCropRect: CGRect?
     var faceEffect: FaceEffect = .none
     var isMirrored = true
     var facePadding: CGFloat = 0.18

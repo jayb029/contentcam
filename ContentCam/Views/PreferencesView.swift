@@ -35,16 +35,3 @@ struct PreferencesView: View {
         )
     }
 }
-
-struct PreferencesCommands: Commands {
-    @Environment(\.openSettings) private var openSettings
-
-    var body: some Commands {
-        CommandGroup(replacing: .appSettings) {
-            Button("Preferences…") {
-                openSettings()
-            }
-            .keyboardShortcut(",", modifiers: .command)
-        }
-    }
-}

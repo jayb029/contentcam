@@ -21,7 +21,6 @@ struct ContentCamApp: App {
         .defaultSize(width: 1_280, height: 800)
         .commands {
             AboutCommands()
-            PreferencesCommands()
 
             CommandGroup(replacing: .help) {
                 Button("ContentCam Documentation") {
@@ -65,23 +64,18 @@ private enum AboutPanel {
     static var options: [NSApplication.AboutPanelOptionKey: Any] {
         [
             .applicationName: "ContentCam",
-            .applicationVersion: version,
+            .applicationVersion: releaseVersion,
+            .version: buildVersion,
             .credits: credits
         ]
     }
 
-    private static var version: String {
-        let release = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
-        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
+    private static var releaseVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown"
+    }
 
-        switch (release, build) {
-        case let (.some(release), .some(build)):
-            return "\(release) (\(build))"
-        case let (.some(release), .none):
-            return release
-        default:
-            return "Unknown"
-        }
+    private static var buildVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "Unknown"
     }
 
     private static var credits: NSAttributedString {

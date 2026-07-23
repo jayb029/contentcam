@@ -12,6 +12,7 @@ final class CameraEngine: NSObject, ObservableObject {
     }
 
     @Published private(set) var image: CGImage?
+    @Published private(set) var cropSourceImage: CGImage?
     @Published private(set) var state: CameraState = .idle
     @Published private(set) var devices: [AVCaptureDevice] = []
     @Published var selectedDeviceID: String?
@@ -23,7 +24,7 @@ final class CameraEngine: NSObject, ObservableObject {
     private let settingsLock = NSLock()
     private let displayLock = NSLock()
     private var frameSettings = FrameSettings()
-    private var pendingDisplayImage: CGImage?
+    private var pendingDisplayFrame: ProcessedCameraFrame?
     private var isDisplayUpdateScheduled = false
     private var configured = false
 
@@ -164,11 +165,11 @@ final class CameraEngine: NSObject, ObservableObject {
         DispatchQueue.main.async { [weak self] in self?.state = .failed(message) }
     }
 
-    private func scheduleForDisplay(_ image: CGImage) {
+    private func scheduleForDisplay(_ frame: ProcessedCameraFrame) {
         displayLock.lock()
         // SwiftUI can render more slowly than capture produces frames. Replace
         // the pending frame instead of retaining one main-queue block per frame.
-        pendingDisplayImage = image
+        pendingDisplayFrame = frame
 
         guard !isDisplayUpdateScheduled else {
             displayLock.unlock()
@@ -185,12 +186,13 @@ final class CameraEngine: NSObject, ObservableObject {
 
     private func displayLatestImage() {
         displayLock.lock()
-        let latestImage = pendingDisplayImage
-        pendingDisplayImage = nil
+        let latestFrame = pendingDisplayFrame
+        pendingDisplayFrame = nil
         isDisplayUpdateScheduled = false
         displayLock.unlock()
 
-        image = latestImage
+        image = latestFrame?.output
+        cropSourceImage = latestFrame?.cropSource
     }
 }
 

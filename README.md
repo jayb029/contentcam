@@ -21,7 +21,7 @@ ContentCam is a native macOS camera studio for turning a normal camera into a co
 
 ContentCam requires macOS 14 or newer.
 
-The first-run guide lets you preview three practical starting points—**Meeting ready**, **Vertical creator**, and **Privacy first**—and choose Production or Nightly updates. Open the guide again anytime with the **Guide** button in the Studio toolbar or `Command-/`.
+The first-run guide lets you preview three practical starting points—**Meeting ready**, **Vertical creator**, and **Privacy first**—and choose Production or Nightly updates. You can change the update channel later in **ContentCam > Settings**.
 
 For usage, troubleshooting, update, and diagnostic-log details, open **Help > ContentCam Documentation** or read [the documentation](DOCUMENTATION.md).
 

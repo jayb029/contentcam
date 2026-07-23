@@ -6,14 +6,20 @@ final class StudioModel: ObservableObject {
     @Published var outputFormat: OutputFormat = .landscape { didSet { syncSettings() } }
     @Published var customCanvasWidth = 1_920 {
         didSet {
-            customCanvasWidth = max(customCanvasWidth, 1)
-            syncSettings()
+            if customCanvasWidth < 1 {
+                customCanvasWidth = 1
+            } else {
+                syncSettings()
+            }
         }
     }
     @Published var customCanvasHeight = 1_080 {
         didSet {
-            customCanvasHeight = max(customCanvasHeight, 1)
-            syncSettings()
+            if customCanvasHeight < 1 {
+                customCanvasHeight = 1
+            } else {
+                syncSettings()
+            }
         }
     }
     @Published var faceEffect: FaceEffect = .none { didSet { syncSettings() } }
@@ -23,6 +29,9 @@ final class StudioModel: ObservableObject {
     @Published var showGuides = true
     @Published var cropScale: CGFloat = 1 { didSet { syncSettings() } }
     @Published var cropOffset: CGSize = .zero { didSet { syncSettings() } }
+    @Published var customCropRect = CGRect(x: 0, y: 0, width: 1, height: 1) {
+        didSet { syncSettings() }
+    }
 
     let camera = CameraEngine()
 
@@ -33,6 +42,8 @@ final class StudioModel: ObservableObject {
     var settings: FrameSettings {
         FrameSettings(
             outputAspectRatio: outputAspectRatio,
+            showsCropEditor: outputFormat == .custom,
+            customCropRect: outputFormat == .custom ? customCropRect : nil,
             faceEffect: faceEffect,
             isMirrored: isMirrored,
             facePadding: facePadding,

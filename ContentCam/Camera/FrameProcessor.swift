@@ -3,6 +3,11 @@ import CoreImage
 import CoreImage.CIFilterBuiltins
 import Vision
 
+struct ProcessedCameraFrame {
+    let output: CGImage
+    let cropSource: CGImage?
+}
+
 final class FrameProcessor {
     private let context = CIContext(options: [
         .cacheIntermediates: false,
@@ -12,19 +17,12 @@ final class FrameProcessor {
     private var trackedFaces: [VNFaceObservation] = []
     private var emojiCache: [String: CIImage] = [:]
 
-    func process(pixelBuffer: CVPixelBuffer, settings: FrameSettings) -> CGImage? {
+    func process(pixelBuffer: CVPixelBuffer, settings: FrameSettings) -> ProcessedCameraFrame? {
         var image = normalized(CIImage(cvPixelBuffer: pixelBuffer))
 
         if settings.isMirrored {
             image = mirror(image)
         }
-
-        image = crop(
-            image,
-            to: settings.outputAspectRatio,
-            scale: settings.cropScale,
-            offset: settings.cropOffset
-        )
 
         if settings.faceEffect != .none {
             updateFaces(in: image)
@@ -33,7 +31,23 @@ final class FrameProcessor {
             trackedFaces = []
         }
 
-        return context.createCGImage(image, from: image.extent)
+        let cropSource = settings.showsCropEditor
+            ? context.createCGImage(image, from: image.extent)
+            : nil
+        let outputImage: CIImage
+        if let customCropRect = settings.customCropRect {
+            outputImage = crop(image, toNormalizedRect: customCropRect)
+        } else {
+            outputImage = crop(
+                image,
+                to: settings.outputAspectRatio,
+                scale: settings.cropScale,
+                offset: settings.cropOffset
+            )
+        }
+
+        guard let output = context.createCGImage(outputImage, from: outputImage.extent) else { return nil }
+        return ProcessedCameraFrame(output: output, cropSource: cropSource)
     }
 
     private func normalized(_ image: CIImage) -> CIImage {
@@ -82,6 +96,22 @@ final class FrameProcessor {
             y: source.midY - cropSize.height / 2 + verticalPosition * maximumShiftY,
             width: cropSize.width,
             height: cropSize.height
+        )
+
+        return normalized(image.cropped(to: rect))
+    }
+
+    private func crop(_ image: CIImage, toNormalizedRect normalizedRect: CGRect) -> CIImage {
+        let source = image.extent
+        let width = min(max(normalizedRect.width, 0.01), 1)
+        let height = min(max(normalizedRect.height, 0.01), 1)
+        let x = min(max(normalizedRect.minX, 0), 1 - width)
+        let yFromTop = min(max(normalizedRect.minY, 0), 1 - height)
+        let rect = CGRect(
+            x: source.minX + x * source.width,
+            y: source.minY + (1 - yFromTop - height) * source.height,
+            width: width * source.width,
+            height: height * source.height
         )
 
         return normalized(image.cropped(to: rect))

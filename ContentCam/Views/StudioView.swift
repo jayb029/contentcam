@@ -18,7 +18,6 @@ struct StudioView: View {
             VStack(spacing: 0) {
                 toolbar
                 previewArea
-                workflowBar
             }
 
             Divider().opacity(0.45)
@@ -142,17 +141,6 @@ struct StudioView: View {
             Spacer()
 
             Button {
-                InMemoryLog.shared.info("Guide opened", category: "Guide")
-                isShowingGuide = true
-            } label: {
-                Label("Guide", systemImage: "questionmark.circle")
-            }
-            .buttonStyle(.plain)
-            .font(.system(size: 11, weight: .medium))
-            .foregroundStyle(.secondary)
-            .keyboardShortcut("/", modifiers: [.command])
-
-            Button {
                 InMemoryLog.shared.info("Clean Output opened", category: "Output")
                 openWindow(id: "clean-output")
             } label: {
@@ -183,7 +171,11 @@ struct StudioView: View {
                 cornerRadius: studio.cornerRadius,
                 cropScale: $studio.cropScale,
                 cropOffset: $studio.cropOffset,
-                allowsCropAdjustment: true
+                allowsCropAdjustment: true,
+                showsCropEditor: studio.outputFormat == .custom,
+                customCropRect: $studio.customCropRect,
+                customCanvasWidth: $studio.customCanvasWidth,
+                customCanvasHeight: $studio.customCanvasHeight
             )
             .frame(
                 maxWidth: min(proxy.size.width - 64, 900),
@@ -203,23 +195,6 @@ struct StudioView: View {
                 endPoint: .bottom
             )
         }
-    }
-
-    private var workflowBar: some View {
-        HStack(spacing: 14) {
-            WorkflowStep(number: "1", title: "Open clean output", isActive: true)
-            Image(systemName: "chevron.right").font(.system(size: 9, weight: .bold)).foregroundStyle(.tertiary)
-            WorkflowStep(number: "2", title: "Capture window in OBS", isActive: false)
-            Image(systemName: "chevron.right").font(.system(size: 9, weight: .bold)).foregroundStyle(.tertiary)
-            WorkflowStep(number: "3", title: "Start OBS Virtual Camera", isActive: false)
-            Spacer()
-            Text("No video leaves your Mac")
-                .font(.system(size: 10, weight: .medium))
-                .foregroundStyle(.tertiary)
-        }
-        .padding(.horizontal, 22)
-        .frame(height: 54)
-        .background(Color(nsColor: NSColor(calibratedWhite: 0.085, alpha: 1)))
     }
 
     private var effectsInspector: some View {
@@ -276,17 +251,6 @@ struct StudioView: View {
                         .foregroundStyle(.tertiary)
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Label("OBS capture", systemImage: "macwindow.on.rectangle")
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundStyle(Color.accentColor)
-                    Text("Capture the borderless Clean Output window in OBS, then start OBS Virtual Camera.")
-                        .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .padding(12)
-                .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             }
             .padding(18)
         }
@@ -409,13 +373,19 @@ private struct CompactToggle: View {
     @Binding var isOn: Bool
 
     var body: some View {
-        Toggle(isOn: $isOn) {
+        HStack(spacing: 10) {
             Label(title, systemImage: symbol)
                 .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(.secondary)
+
+            Spacer(minLength: 8)
+
+            Toggle("", isOn: $isOn)
+                .labelsHidden()
+                .toggleStyle(.switch)
+                .controlSize(.mini)
         }
-        .toggleStyle(.switch)
-        .controlSize(.mini)
+        .frame(maxWidth: .infinity)
         .padding(.vertical, 6)
     }
 }
@@ -521,25 +491,6 @@ private struct InspectorSection<Content: View>: View {
                 .tracking(0.8)
                 .foregroundStyle(.tertiary)
             content
-        }
-    }
-}
-
-private struct WorkflowStep: View {
-    let number: String
-    let title: String
-    let isActive: Bool
-
-    var body: some View {
-        HStack(spacing: 7) {
-            Text(number)
-                .font(.system(size: 9, weight: .bold))
-                .frame(width: 18, height: 18)
-                .background(isActive ? Color.accentColor : .white.opacity(0.08), in: Circle())
-                .foregroundStyle(isActive ? .white : .secondary)
-            Text(title)
-                .font(.system(size: 10, weight: .medium))
-                .foregroundStyle(isActive ? .primary : .secondary)
         }
     }
 }
