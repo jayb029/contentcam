@@ -155,7 +155,8 @@ struct StudioView: View {
             CameraPreview(
                 camera: studio.camera,
                 showGuides: studio.showGuides,
-                aspectRatio: studio.outputFormat.aspectRatio
+                aspectRatio: studio.outputFormat.aspectRatio,
+                cornerRadius: studio.cornerRadius
             )
             .frame(
                 maxWidth: min(proxy.size.width - 64, 900),

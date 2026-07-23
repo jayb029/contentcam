@@ -144,7 +144,8 @@ struct OnboardingView: View {
                 CameraPreview(
                     camera: studio.camera,
                     showGuides: studio.showGuides,
-                    aspectRatio: studio.outputFormat.aspectRatio
+                    aspectRatio: studio.outputFormat.aspectRatio,
+                    cornerRadius: studio.cornerRadius
                 )
                 .frame(width: 390, height: 300)
                 .animation(.easeOut(duration: 0.2), value: studio.outputFormat)

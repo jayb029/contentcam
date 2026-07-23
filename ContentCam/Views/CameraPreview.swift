@@ -5,6 +5,7 @@ struct CameraPreview: View {
     @ObservedObject var camera: CameraEngine
     let showGuides: Bool
     let aspectRatio: CGFloat
+    let cornerRadius: CGFloat
 
     var body: some View {
         ZStack {
@@ -25,9 +26,9 @@ struct CameraPreview: View {
             }
         }
         .aspectRatio(aspectRatio, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .stroke(.white.opacity(0.1), lineWidth: 1)
         }
         .shadow(color: .black.opacity(0.35), radius: 32, y: 20)
