@@ -89,25 +89,30 @@ jobs:
               exit 1
             fi
 
-            range="${previous_tag}..${COMMIT_SHA}"
             heading="Commits since ${previous_tag}"
           else
-            range="$COMMIT_SHA"
             heading="Commits in this release"
           fi
 
-          {
-            echo "## ${heading}"
-            echo
+          scripts/commit-changelog.sh \
+            "$previous_tag" \
+            "$COMMIT_SHA" \
+            "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
+            "$heading" > commit-changelog.md
 
-            while IFS=$'\t' read -r sha subject; do
-              printf -- '- [`%s`](https://github.com/%s/commit/%s) %s\n' \
-                "$sha" "$GITHUB_REPOSITORY" "$sha" "$subject"
-            done < <(git log --reverse --format='%H%x09%s' "$range")
-          } > commit-changelog.md
+          scripts/main-release-notes.sh \
+            "${{ inputs.version }}" \
+            "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' ContentCam/Info.plist)" \
+            "$COMMIT_SHA" \
+            "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" > release-notes.md
+          printf '\n' >> release-notes.md
+          cat commit-changelog.md >> release-notes.md
 
       - name: Build universal macOS DMG
         run: scripts/build-release.sh
+
+      - name: Add release notes to the in-app update
+        run: scripts/attach-release-notes.sh build/release release-notes.md
 
       - name: Generate signed Production update feed
         env:
@@ -117,7 +122,8 @@ jobs:
           scripts/generate-appcast.sh \
             build/release \
             build/release/appcast.xml \
-            "$DOWNLOAD_URL_PREFIX"
+            "$DOWNLOAD_URL_PREFIX" \
+            "${{ github.server_url }}/${{ github.repository }}/releases"
 
       - name: Upload release artifact
         uses: actions/upload-artifact@v6
@@ -133,17 +139,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ inputs.version }}
           COMMIT_SHA: ${{ steps.metadata.outputs.commit_sha }}
-          BUILD_NUMBER: ${{ steps.metadata.outputs.build_number }}
         run: |
-          release_notes="$(scripts/main-release-notes.sh \
-            "$VERSION" \
-            "$BUILD_NUMBER" \
-            "$COMMIT_SHA" \
-            "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}")"
-          release_notes="${release_notes}"$'\n\n'"$(< commit-changelog.md)"
-
           gh release create "v${VERSION}" build/release/*.dmg build/release/appcast.xml \
             --target "$COMMIT_SHA" \
             --title "ContentCam ${VERSION}" \
-            --notes "$release_notes" \
+            --notes-file release-notes.md \
             --generate-notes

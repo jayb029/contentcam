@@ -5,17 +5,19 @@ set -euo pipefail
 version="${1:-}"
 build_number="${2:-}"
 commit_sha="${3:-}"
-repository_url="${4:-}"
+branch_name="${4:-}"
+repository_url="${5:-}"
+comparison_label="${6:-}"
 
-if [[ -z "$version" || -z "$build_number" || -z "$commit_sha" || -z "$repository_url" ]]; then
-  echo "Usage: main-release-notes <version> <build> <commit> <repository-url>" >&2
+if [[ -z "$version" || -z "$build_number" || -z "$commit_sha" || -z "$branch_name" || -z "$repository_url" || -z "$comparison_label" ]]; then
+  echo "Usage: nightly-release-notes <version> <build> <commit> <branch> <repository-url> <comparison-label>" >&2
   exit 1
 fi
 
 short_sha="${commit_sha:0:7}"
 
 printf '%s\n' \
-  "ContentCam ${version} is a native macOS camera studio for creating a clean, content-ready camera feed for OBS, meetings, streams, and vertical video. All camera processing stays on your Mac." \
+  "This Nightly is an automated preview of ContentCam changes that have not shipped in a Production release yet. It is intended for testing and may be less stable." \
   "" \
   "## Download and install" \
   "" \
@@ -24,6 +26,13 @@ printf '%s\n' \
   "3. Open ContentCam from Applications and allow camera access when macOS asks." \
   "4. If Gatekeeper blocks the first launch, Control-click ContentCam, choose **Open**, then confirm. This build is not yet notarized." \
   "" \
+  "## Nightly build details" \
+  "" \
+  "- **Source branch:** \`${branch_name}\`" \
+  "- **Version:** ${version} (${build_number})" \
+  "- **Source:** [${short_sha}](${repository_url}/commit/${commit_sha})" \
+  "- **Compared with:** ${comparison_label}" \
+  "" \
   "## What ContentCam includes" \
   "" \
   "- Landscape (16:9), vertical (9:16), and square (1:1) output layouts" \
@@ -31,17 +40,11 @@ printf '%s\n' \
   "- Local face blur and pixelation using Apple Vision" \
   "- Tracked cat, dog, and bear privacy covers" \
   "- Rounded transparent output designed for OBS window capture" \
-  "- No accounts, uploads, or analytics; updates and changelog data come only from this GitHub repository" \
+  "- No accounts, uploads, or analytics" \
   "" \
-  "## Compatibility and build" \
+  "## Compatibility and privacy" \
   "" \
   "- **Requires:** macOS 14 or newer" \
   "- **Architectures:** Apple Silicon and Intel" \
-  "- **Version:** ${version} (${build_number})" \
-  "- **Source:** [${short_sha}](${repository_url}/commit/${commit_sha})" \
   "" \
-  "## Privacy" \
-  "" \
-  "ContentCam processes camera frames locally with AVFoundation, Core Image, and Vision. It does not record, upload, or transmit your video." \
-  "" \
-  "GitHub's generated change list for this version appears below."
+  "ContentCam processes camera frames locally with AVFoundation, Core Image, and Vision. It does not record, upload, or transmit your video."

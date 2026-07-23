@@ -26,10 +26,14 @@ Clean Output is a transparent, borderless window intended for capture. Its round
 
 ## Updates
 
-Choose the Production or Nightly update channel in **ContentCam > Settings**. You can manually check with **Help > Check for Updates…**.
+Choose the Production or Nightly update channel in **ContentCam > Settings**. You can manually check with **Help > Check for Updates…**. Open **Help > Changelog…** or select **View Changelog…** in Settings to read Production and Nightly release history inside ContentCam.
 
 - **Production** receives stable releases intended for everyday use.
-- **Nightly** receives the newest in-progress build and may be less stable.
+- **Nightly** receives the newest in-progress build and may be less stable. Each Nightly is published as a separate prerelease so its notes and download remain available.
+
+When an update is available, the update popup includes the changelog for the exact version ContentCam is offering to download.
+
+Repository maintainers create Nightlies on demand from **Actions > Nightly Release** by entering the source branch to build. Any existing branch can be selected, including `main`; the update-metadata-only `nightly-feed` branch is excluded.
 
 ## Diagnostic logs
 
@@ -39,7 +43,7 @@ Nothing is written to disk automatically. To save a copy for troubleshooting, ch
 
 ## Privacy
 
-ContentCam processes camera frames locally with Apple system frameworks. It does not record or transmit video, and it does not include camera frames in exported diagnostic logs. The updater connects to this repository’s GitHub Releases files to check for and download updates.
+ContentCam processes camera frames locally with Apple system frameworks. It does not record or transmit video, and it does not include camera frames in exported diagnostic logs. The updater connects to this repository’s GitHub Releases files to check for and download updates. The changelog requests public release metadata and notes from GitHub’s API when you open it.
 
 ## More help
 
