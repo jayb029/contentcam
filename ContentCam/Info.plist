@@ -26,5 +26,13 @@
 	<true/>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>SUAutomaticallyUpdate</key>
+	<true/>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUFeedURL</key>
+	<string>https://github.com/jayb029/mac-native-content-camera/releases/latest/download/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>RvJlnP7vSzRf2GA3wvrpuY/hpQmWYpYbMxBdWNa1qUk=</string>
 </dict>
 </plist>

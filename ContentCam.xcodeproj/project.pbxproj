@@ -16,6 +16,8 @@
 		A10000000000000000000007 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* CameraPreview.swift */; };
 		A10000000000000000000008 /* OutputWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* OutputWindowView.swift */; };
 		A10000000000000000000009 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000D /* OnboardingView.swift */; };
+		A1000000000000000000000A /* UpdateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* UpdateController.swift */; };
+		A1000000000000000000000B /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000002 /* Sparkle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,7 @@
 		A2000000000000000000000B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		A2000000000000000000000C /* ContentCam.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ContentCam.entitlements; sourceTree = "<group>"; };
 		A2000000000000000000000D /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		A2000000000000000000000E /* UpdateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1000000000000000000000B /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,6 +76,7 @@
 			children = (
 				A20000000000000000000002 /* CameraConfiguration.swift */,
 				A20000000000000000000003 /* StudioModel.swift */,
+				A2000000000000000000000E /* UpdateController.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -120,6 +125,9 @@
 			dependencies = (
 			);
 			name = ContentCam;
+			packageProductDependencies = (
+				AA0000000000000000000002 /* Sparkle */,
+			);
 			productName = ContentCam;
 			productReference = A2000000000000000000000A /* ContentCam.app */;
 			productType = "com.apple.product-type.application";
@@ -149,6 +157,9 @@
 			);
 			mainGroup = A40000000000000000000001;
 			productRefGroup = A40000000000000000000006 /* Products */;
+			packageReferences = (
+				AA0000000000000000000001 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -181,6 +192,7 @@
 				A10000000000000000000007 /* CameraPreview.swift in Sources */,
 				A10000000000000000000008 /* OutputWindowView.swift in Sources */,
 				A10000000000000000000009 /* OnboardingView.swift in Sources */,
+				A1000000000000000000000A /* UpdateController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,6 +301,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AA0000000000000000000001 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = exactVersion;
+				version = 2.9.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AA0000000000000000000002 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA0000000000000000000001 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A60000000000000000000001 /* Project object */;
 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     @EnvironmentObject private var studio: StudioModel
+    @EnvironmentObject private var updates: UpdateController
 
     let isFirstRun: Bool
     let onFinish: () -> Void
@@ -9,8 +10,10 @@ struct OnboardingView: View {
 
     @State private var page = 0
     @State private var selectedPreset: OnboardingPreset?
+    @State private var selectedUpdateChannel: UpdateChannel?
+    @State private var didChooseProduction = false
 
-    private let pageCount = 3
+    private let pageCount = 4
 
     var body: some View {
         VStack(spacing: 0) {
@@ -23,6 +26,8 @@ struct OnboardingView: View {
                     welcomePage
                 case 1:
                     setupPage
+                case 2:
+                    updatesPage
                 default:
                     connectionPage
                 }
@@ -35,6 +40,11 @@ struct OnboardingView: View {
         .frame(width: 780, height: 590)
         .background(Color(nsColor: NSColor(calibratedWhite: 0.085, alpha: 1)))
         .preferredColorScheme(.dark)
+        .onAppear {
+            if !isFirstRun {
+                selectedUpdateChannel = updates.channel
+            }
+        }
     }
 
     private var header: some View {
@@ -228,6 +238,54 @@ struct OnboardingView: View {
         .padding(.vertical, 34)
     }
 
+    private var updatesPage: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 7) {
+                Text("Choose how ContentCam updates")
+                    .font(.system(size: 23, weight: .bold, design: .rounded))
+                Text("ContentCam checks GitHub and installs signed updates for you. You can change this later by reopening the guide.")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.secondary)
+            }
+
+            if didChooseProduction {
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .foregroundStyle(Color.accentColor)
+                    Text("If you downloaded this build from Nightly, ContentCam will automatically move to Production when the next production release ships.")
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .font(.system(size: 11, weight: .medium))
+                .padding(.horizontal, 13)
+                .frame(maxWidth: .infinity, minHeight: 42, alignment: .leading)
+                .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .transition(.opacity)
+            }
+
+            VStack(spacing: 10) {
+                ForEach(UpdateChannel.allCases) { channel in
+                    UpdateChannelButton(
+                        channel: channel,
+                        isSelected: selectedUpdateChannel == channel
+                    ) {
+                        selectedUpdateChannel = channel
+                        didChooseProduction = channel == .production
+                        updates.select(channel)
+                    }
+                }
+            }
+
+            HStack(spacing: 8) {
+                Image(systemName: "checkmark.shield")
+                Text("Updates are verified before installation. Camera frames are never part of an update check.")
+            }
+            .font(.system(size: 10, weight: .medium))
+            .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, 80)
+        .padding(.vertical, 48)
+    }
+
     private var footer: some View {
         HStack(spacing: 12) {
             HStack(spacing: 6) {
@@ -265,6 +323,7 @@ struct OnboardingView: View {
                 }
                 .buttonStyle(OnboardingPrimaryButtonStyle())
                 .keyboardShortcut(.defaultAction)
+                .disabled(page == 2 && selectedUpdateChannel == nil)
             } else {
                 Button("Finish in Studio") {
                     onFinish()
@@ -282,6 +341,46 @@ struct OnboardingView: View {
         }
         .padding(.horizontal, 22)
         .frame(height: 64)
+    }
+}
+
+private struct UpdateChannelButton: View {
+    let channel: UpdateChannel
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 14) {
+                Image(systemName: channel == .production ? "shippingbox" : "moon.stars")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(isSelected ? Color.accentColor : .secondary)
+                    .frame(width: 28)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(channel.title)
+                        .font(.system(size: 13, weight: .semibold))
+                    Text(channel.detail)
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 15))
+                    .foregroundStyle(isSelected ? Color.accentColor : Color.secondary.opacity(0.55))
+            }
+            .padding(.horizontal, 16)
+            .frame(maxWidth: .infinity, minHeight: 68, alignment: .leading)
+            .background(isSelected ? Color.accentColor.opacity(0.08) : .white.opacity(0.025))
+            .overlay {
+                RoundedRectangle(cornerRadius: 9, style: .continuous)
+                    .stroke(isSelected ? Color.accentColor.opacity(0.5) : .white.opacity(0.07), lineWidth: 1)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
+        }
+        .buttonStyle(.plain)
     }
 }
 
