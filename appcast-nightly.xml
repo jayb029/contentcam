@@ -1,0 +1,51 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>ContentCam</title>
+        <item>
+            <title>1.3</title>
+            <pubDate>Thu, 23 Jul 2026 19:26:35 +0000</pubDate>
+            <sparkle:fullReleaseNotesLink>https://github.com/jayb029/contentcam/releases</sparkle:fullReleaseNotesLink>
+            <sparkle:version>20260723192517</sparkle:version>
+            <sparkle:shortVersionString>1.3</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description sparkle:format="markdown"><![CDATA[This Nightly is an automated preview of ContentCam changes that have not shipped in a Production release yet. It is intended for testing and may be less stable.
+
+## Download and install
+
+1. Download **ContentCam-1.3-20260723192517.dmg** below.
+2. Open the DMG and drag **ContentCam** onto the **Applications** shortcut.
+3. Open ContentCam from Applications and allow camera access when macOS asks.
+4. If Gatekeeper blocks the first launch, Control-click ContentCam, choose **Open**, then confirm. This build is not yet notarized.
+
+## Nightly build details
+
+- **Source branch:** `main`
+- **Version:** 1.3 (20260723192517)
+- **Source:** [1c521a3](https://github.com/jayb029/contentcam/commit/1c521a3a80dd37469bbc8c30db3afc17358be2ed)
+- **Compared with:** latest Production release `v1.3`
+
+## What ContentCam includes
+
+- Landscape (16:9), vertical (9:16), and square (1:1) output layouts
+- Mirrored preview and composition guides
+- Local face blur and pixelation using Apple Vision
+- Tracked cat, dog, and bear privacy covers
+- Rounded transparent output designed for OBS window capture
+- No accounts, uploads, or analytics
+
+## Compatibility and privacy
+
+- **Requires:** macOS 14 or newer
+- **Architectures:** Apple Silicon and Intel
+
+ContentCam processes camera frames locally with AVFoundation, Core Image, and Vision. It does not record, upload, or transmit your video.
+
+## Commits since latest Production release `v1.3`
+
+- [`1c521a3a80dd37469bbc8c30db3afc17358be2ed`](https://github.com/jayb029/contentcam/commit/1c521a3a80dd37469bbc8c30db3afc17358be2ed) Bump build number to 20260723192517 [skip ci]
+]]></description>
+            <enclosure url="https://github.com/jayb029/contentcam/releases/download/nightly-20260723192517/ContentCam-1.3-20260723192517.dmg" length="2050209" type="application/octet-stream" sparkle:edSignature="7XylIxGYT+u+39XJkD9TxSdc9CgLjx40ymuiAkRslmPGicfqY8XETp/wJWANX/CntuQ5nDG60HIwhx/WRaHGCg=="/>
+        </item>
+    </channel>
+</rss>
