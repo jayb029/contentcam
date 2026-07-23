@@ -62,6 +62,48 @@ jobs:
           echo "build_number=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' ContentCam/Info.plist)" >> "$GITHUB_OUTPUT"
           echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      - name: Create exact commit changelog
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMIT_SHA: ${{ steps.metadata.outputs.commit_sha }}
+        run: |
+          previous_tag="$(
+            gh release list \
+              --exclude-drafts \
+              --exclude-pre-releases \
+              --limit 1 \
+              --json tagName \
+              --jq '.[0].tagName // ""'
+          )"
+
+          if [[ -n "$previous_tag" ]]; then
+            if ! git rev-parse --verify --quiet "${previous_tag}^{commit}" >/dev/null; then
+              echo "Previous release tag ${previous_tag} is not available in the checkout." >&2
+              exit 1
+            fi
+
+            if ! git merge-base --is-ancestor "$previous_tag" "$COMMIT_SHA"; then
+              echo "Previous release tag ${previous_tag} is not an ancestor of ${COMMIT_SHA}." >&2
+              exit 1
+            fi
+
+            range="${previous_tag}..${COMMIT_SHA}"
+            heading="Commits since ${previous_tag}"
+          else
+            range="$COMMIT_SHA"
+            heading="Commits in this release"
+          fi
+
+          {
+            echo "## ${heading}"
+            echo
+
+            while IFS=$'\t' read -r sha subject; do
+              printf -- '- [`%s`](https://github.com/%s/commit/%s) %s\n' \
+                "$sha" "$GITHUB_REPOSITORY" "$sha" "$subject"
+            done < <(git log --reverse --format='%H%x09%s' "$range")
+          } > commit-changelog.md
+
       - name: Build universal macOS DMG
         run: scripts/build-release.sh
 
@@ -84,6 +126,7 @@ jobs:
             "$BUILD_NUMBER" \
             "$COMMIT_SHA" \
             "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}")"
+          release_notes="${release_notes}"$'\n\n'"$(< commit-changelog.md)"
 
           gh release create "v${VERSION}" build/release/*.dmg \
             --target "$COMMIT_SHA" \
