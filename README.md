@@ -10,7 +10,8 @@ ContentCam is a native macOS camera studio for turning a normal camera into a co
 - Cat, dog, and bear face covers tracked with Apple Vision
 - Rounded corners with transparent edges—no green screen or chroma key
 - A borderless **Clean Output** window designed for OBS capture
-- No uploads, accounts, analytics, or third-party dependencies
+- Signed in-app updates from GitHub, with Production and Nightly channels
+- No uploads, accounts, or analytics
 
 ## Run it
 
@@ -20,7 +21,7 @@ ContentCam is a native macOS camera studio for turning a normal camera into a co
 
 ContentCam requires macOS 14 or newer.
 
-The first-run guide lets you preview three practical starting points—**Meeting ready**, **Vertical creator**, and **Privacy first**—and applies the one you choose. Open the guide again anytime with the **Guide** button in the Studio toolbar or `Command-/`.
+The first-run guide lets you preview three practical starting points—**Meeting ready**, **Vertical creator**, and **Privacy first**—and choose Production or Nightly updates. Open the guide again anytime with the **Guide** button in the Studio toolbar or `Command-/`.
 
 ## Use it with OBS and other camera apps
 
@@ -40,16 +41,16 @@ Clean Output uses a transparent, borderless window, so its rounded corners do no
 
 ## Privacy
 
-All frame processing uses AVFoundation, Core Image, and Vision on your Mac. ContentCam does not record or transmit video.
+All frame processing uses AVFoundation, Core Image, and Vision on your Mac. ContentCam does not record or transmit video. The updater contacts this repository's GitHub Releases pages to check for and download signed app updates; camera frames are never included in those requests.
 
 ## Releases
 
 This repository uses two long-lived branches:
 
-- Every branch except `main` creates a new **Nightly** prerelease on every push. The workflow increments the build number shown in parentheses in **ContentCam > About ContentCam**, commits that change back to the source branch, builds the app, and replaces the rolling `nightly` prerelease. Its title and description identify the branch that produced it.
-- `main` creates releases only when the **Main Release** workflow is run manually. The workflow asks for a version such as `1.0` or `1.2.3`, commits that marketing version to `main` when it changed, builds the app, and publishes a tagged GitHub Release with installation instructions, compatibility and privacy details, build metadata, and generated change notes. Its release notes also identify every commit since the previous stable release by full commit SHA.
+- Every branch except `main` creates a new **Nightly** prerelease on every push. The workflow assigns a timestamp build number shown in parentheses in **ContentCam > About ContentCam**, commits that change back to the source branch, builds the app, and replaces the rolling `nightly` prerelease. Its title and description identify the branch that produced it.
+- `main` creates releases only when the **Main Release** workflow is run manually. The workflow asks for a version such as `1.0` or `1.2.3`, assigns a newer timestamp build number, commits the release version to `main`, builds the app, and publishes a tagged GitHub Release with installation instructions, compatibility and privacy details, build metadata, and generated change notes. Its release notes also identify every commit since the previous stable release by full commit SHA.
 
-Both workflows build an unsigned universal macOS app inside a branded drag-to-Applications DMG and attach it to the workflow run and GitHub Release. Code signing and notarization require an Apple Developer certificate and are not configured in this repository.
+Both workflows build an unsigned universal macOS app inside a branded drag-to-Applications DMG, generate a Sparkle appcast signed with the repository's `SPARKLE_PRIVATE_KEY` Actions secret, and attach both files to the GitHub Release. Sparkle verifies that signature before installing an update. Apple code signing and notarization still require an Apple Developer certificate and are not configured in this repository.
 
 ### Promote dev changes to main
 

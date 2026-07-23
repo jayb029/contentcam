@@ -3,6 +3,7 @@ import SwiftUI
 
 struct StudioView: View {
     @EnvironmentObject private var studio: StudioModel
+    @EnvironmentObject private var updates: UpdateController
     @Environment(\.openWindow) private var openWindow
     @AppStorage("hasCompletedContentCamOnboarding") private var hasCompletedOnboarding = false
     @State private var isShowingGuide = false
@@ -31,6 +32,8 @@ struct StudioView: View {
             studio.start()
             if !hasCompletedOnboarding {
                 isShowingGuide = true
+            } else {
+                updates.start()
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
@@ -144,6 +147,7 @@ struct StudioView: View {
     private func completeOnboarding() {
         hasCompletedOnboarding = true
         isShowingGuide = false
+        updates.start()
     }
 
     private var previewArea: some View {

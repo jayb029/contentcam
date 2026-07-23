@@ -41,18 +41,20 @@ jobs:
             exit 1
           fi
 
-      - name: Update and commit marketing version
+      - name: Update and commit release version
         env:
           VERSION: ${{ inputs.version }}
         run: |
           git pull --rebase origin main
           scripts/set-marketing-version.sh "$VERSION"
+          build_number="$(date -u +%Y%m%d%H%M%S)"
+          scripts/set-build-number.sh "$build_number"
 
           if ! git diff --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add ContentCam/Info.plist ContentCam.xcodeproj/project.pbxproj
-            git commit -m "Set version to ${VERSION}"
+            git commit -m "Prepare version ${VERSION} (${build_number})"
             git push origin HEAD:main
           fi
 
@@ -107,11 +109,23 @@ jobs:
       - name: Build universal macOS DMG
         run: scripts/build-release.sh
 
+      - name: Generate signed Production update feed
+        env:
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+          DOWNLOAD_URL_PREFIX: ${{ github.server_url }}/${{ github.repository }}/releases/download/v${{ inputs.version }}/
+        run: |
+          scripts/generate-appcast.sh \
+            build/release \
+            build/release/appcast.xml \
+            "$DOWNLOAD_URL_PREFIX"
+
       - name: Upload release artifact
         uses: actions/upload-artifact@v6
         with:
           name: ContentCam-${{ inputs.version }}-${{ steps.metadata.outputs.build_number }}
-          path: build/release/*.dmg
+          path: |
+            build/release/*.dmg
+            build/release/appcast.xml
           if-no-files-found: error
 
       - name: Publish GitHub Release
@@ -128,7 +142,7 @@ jobs:
             "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}")"
           release_notes="${release_notes}"$'\n\n'"$(< commit-changelog.md)"
 
-          gh release create "v${VERSION}" build/release/*.dmg \
+          gh release create "v${VERSION}" build/release/*.dmg build/release/appcast.xml \
             --target "$COMMIT_SHA" \
             --title "ContentCam ${VERSION}" \
             --notes "$release_notes" \

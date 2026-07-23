@@ -31,7 +31,7 @@ printf '%s\n' \
   "- Local face blur and pixelation using Apple Vision" \
   "- Tracked cat, dog, and bear privacy covers" \
   "- Rounded transparent output designed for OBS window capture" \
-  "- No accounts, uploads, analytics, or third-party runtime dependencies" \
+  "- No accounts, uploads, or analytics; Sparkle only contacts GitHub to retrieve signed app updates" \
   "" \
   "## Compatibility and build" \
   "" \
