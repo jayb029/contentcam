@@ -23,9 +23,7 @@ struct ContentCamApp: App {
             AboutCommands()
 
             CommandGroup(replacing: .help) {
-                Button("ContentCam Documentation") {
-                    ContentCamHelp.openDocumentation()
-                }
+                ShowDocumentationCommand()
 
                 Button("Export Logs…") {
                     ContentCamHelp.exportLogs()
@@ -41,6 +39,11 @@ struct ContentCamApp: App {
             PreferencesView(updates: updates)
         }
 
+        Window("ContentCam Documentation", id: "documentation") {
+            DocumentationView()
+        }
+        .defaultSize(width: 760, height: 620)
+
         Window("ContentCam Changelog", id: "changelog") {
             ChangelogView()
         }
@@ -53,6 +56,17 @@ struct ContentCamApp: App {
         .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 960, height: 540)
         .commandsRemoved()
+    }
+}
+
+private struct ShowDocumentationCommand: View {
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        Button("ContentCam Documentation") {
+            InMemoryLog.shared.info("Documentation opened", category: "Help")
+            openWindow(id: "documentation")
+        }
     }
 }
 

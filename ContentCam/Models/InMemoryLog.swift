@@ -89,18 +89,6 @@ final class InMemoryLog: @unchecked Sendable {
 
 @MainActor
 enum ContentCamHelp {
-    private static let documentationURL = URL(
-        string: "https://github.com/jayb029/contentcam/blob/main/DOCUMENTATION.md"
-    )!
-
-    static func openDocumentation() {
-        InMemoryLog.shared.info("Documentation requested", category: "Help")
-        if !NSWorkspace.shared.open(documentationURL) {
-            InMemoryLog.shared.error("Could not open the documentation URL", category: "Help")
-            showError(message: "ContentCam couldn’t open the documentation in your browser.")
-        }
-    }
-
     static func exportLogs() {
         InMemoryLog.shared.info("Log export requested", category: "Help")
 

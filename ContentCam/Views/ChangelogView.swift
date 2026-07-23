@@ -121,7 +121,7 @@ struct ChangelogView: View {
                         Text("No release notes were published for this update.")
                             .foregroundStyle(.secondary)
                     } else {
-                        ChangelogMarkdownView(markdown: release.body)
+                        MarkdownDocumentView(markdown: release.body)
                     }
 
                     Divider()
@@ -166,7 +166,7 @@ private struct ChangelogReleaseRow: View {
     }
 }
 
-private struct ChangelogMarkdownView: View {
+struct MarkdownDocumentView: View {
     let markdown: String
 
     var body: some View {
