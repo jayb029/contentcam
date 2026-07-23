@@ -48,9 +48,11 @@ final class StudioModel: ObservableObject {
 
     init() {
         let defaults = UserDefaults.standard
-        restoresPreviousSession = defaults.object(forKey: DefaultsKey.restoresPreviousSession) as? Bool ?? true
+        let shouldRestorePreviousSession =
+            defaults.object(forKey: DefaultsKey.restoresPreviousSession) as? Bool ?? true
+        restoresPreviousSession = shouldRestorePreviousSession
 
-        let savedSession = restoresPreviousSession
+        let savedSession = shouldRestorePreviousSession
             ? Self.loadSavedSession(from: defaults)
             : nil
 

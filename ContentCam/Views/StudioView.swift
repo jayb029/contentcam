@@ -140,6 +140,17 @@ struct StudioView: View {
             Spacer()
 
             Button {
+                InMemoryLog.shared.info("Guide opened from Studio", category: "Guide")
+                isShowingGuide = true
+            } label: {
+                Label("Guide", systemImage: "questionmark.circle")
+            }
+            .buttonStyle(.plain)
+            .font(.system(size: 11, weight: .medium))
+            .foregroundStyle(.secondary)
+            .keyboardShortcut("/", modifiers: .command)
+
+            Button {
                 InMemoryLog.shared.info("Clean Output opened", category: "Output")
                 openWindow(id: "clean-output")
             } label: {

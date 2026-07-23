@@ -40,7 +40,7 @@ struct PreferencesView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(width: 440, height: 380)
+        .frame(width: 440, height: 430)
     }
 
     private var updateChannel: Binding<UpdateChannel> {

@@ -98,25 +98,34 @@ enum ContentCamHelp {
         panel.nameFieldStringValue = defaultLogFileName
         panel.allowedContentTypes = [.plainText]
         panel.canCreateDirectories = true
+        panel.directoryURL = FileManager.default.urls(
+            for: .documentDirectory,
+            in: .userDomainMask
+        ).first
 
-        panel.begin { response in
-            guard response == .OK, let destination = panel.url else {
-                InMemoryLog.shared.info("Log export canceled", category: "Help")
-                return
-            }
+        guard panel.runModal() == .OK, let destination = panel.url else {
+            InMemoryLog.shared.info("Log export canceled", category: "Help")
+            return
+        }
 
-            InMemoryLog.shared.info("Log export destination selected", category: "Help")
-            do {
-                try InMemoryLog.shared.exportText().write(
-                    to: destination,
-                    atomically: true,
-                    encoding: .utf8
-                )
-                InMemoryLog.shared.info("Log export completed", category: "Help")
-            } catch {
-                InMemoryLog.shared.error("Log export failed: \(error.localizedDescription)", category: "Help")
-                showError(message: "ContentCam couldn’t export the log file.\n\n\(error.localizedDescription)")
+        InMemoryLog.shared.info("Log export destination selected", category: "Help")
+        let isAccessingDestination = destination.startAccessingSecurityScopedResource()
+        defer {
+            if isAccessingDestination {
+                destination.stopAccessingSecurityScopedResource()
             }
+        }
+
+        do {
+            try InMemoryLog.shared.exportText().write(
+                to: destination,
+                atomically: false,
+                encoding: .utf8
+            )
+            InMemoryLog.shared.info("Log export completed", category: "Help")
+        } catch {
+            InMemoryLog.shared.error("Log export failed: \(error.localizedDescription)", category: "Help")
+            showError(message: "ContentCam couldn’t export the log file.\n\n\(error.localizedDescription)")
         }
     }
 

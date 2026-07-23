@@ -18,8 +18,6 @@ xcodebuild \
   -derivedDataPath "$derived_data_path" \
   ARCHS="arm64 x86_64" \
   ONLY_ACTIVE_ARCH=NO \
-  CODE_SIGNING_ALLOWED=NO \
-  CODE_SIGNING_REQUIRED=NO \
   build
 
 scripts/create-dmg.sh \
