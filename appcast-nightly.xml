@@ -4,21 +4,29 @@
         <title>ContentCam</title>
         <item>
             <title>1.3</title>
-            <pubDate>Thu, 23 Jul 2026 19:48:34 +0000</pubDate>
-            <sparkle:fullReleaseNotesLink>https://github.com/jayb029/contentcam/releases/tag/nightly-20260723194737</sparkle:fullReleaseNotesLink>
-            <sparkle:version>20260723194737</sparkle:version>
+            <pubDate>Thu, 23 Jul 2026 21:04:05 +0000</pubDate>
+            <sparkle:fullReleaseNotesLink>https://github.com/jayb029/contentcam/releases/tag/nightly-20260723210225</sparkle:fullReleaseNotesLink>
+            <sparkle:version>20260723210225</sparkle:version>
             <sparkle:shortVersionString>1.3</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-            <description sparkle:format="markdown"><![CDATA[ContentCam Nightly 20260723194737 is a native macOS camera studio for creating a clean, content-ready camera feed for OBS, meetings, streams, and vertical video. All camera processing stays on your Mac.
+            <description sparkle:format="markdown"><![CDATA[ContentCam Nightly 20260723210225 is a native macOS camera studio for creating a clean, content-ready camera feed for OBS, meetings, streams, and vertical video. All camera processing stays on your Mac.
 
-## Commits since previous Nightly `nightly-20260723192517`
+## Commits since previous Nightly `nightly-20260723194737`
 
-- [`fd996e1`](https://github.com/jayb029/contentcam/commit/fd996e15b37c5cdf39c191de1d6a9194c53929e7) Make releases more compatable
-- [`ac8c6f8`](https://github.com/jayb029/contentcam/commit/ac8c6f82f17c6b17a436171dbedf3d724be356e9) Bump build number to 20260723194737 [skip ci]
+- [`ce44e2c`](https://github.com/jayb029/contentcam/commit/ce44e2cc1c1c2affd6eb37d77d1057fe850a1a31) Check for updates every 30 minutes
+- [`8b57778`](https://github.com/jayb029/contentcam/commit/8b57778cad10ea29b55a7a4438ef7cee2a0d7af5) Add ContentCam app icon
+- [`6bcaf85`](https://github.com/jayb029/contentcam/commit/6bcaf85c8be04a446d18b8154f49071d61c4a6d5) Show documentation in app
+- [`c56df46`](https://github.com/jayb029/contentcam/commit/c56df467f17c668e25123d08479dfa2cbd04b97c) Open in-app changelog from update history
+- [`df941aa`](https://github.com/jayb029/contentcam/commit/df941aaaf8d63c66d31ff7a093a4231802c4910f) Restore previous studio session
+- [`0add0a9`](https://github.com/jayb029/contentcam/commit/0add0a9e21fd7764473c423b660dfd6bd9126852) Merge branch 'main' of https://github.com/jayb029/contentcam
+- [`e2f6dce`](https://github.com/jayb029/contentcam/commit/e2f6dce2d269eb305ce452b13d2b8364593b5e3e) Bump build number to 20260723202538 [skip ci]
+- [`79c6f64`](https://github.com/jayb029/contentcam/commit/79c6f6454cf7d1c917f7aa89ca4882fea6bf378f) Fix swift compile error
+- [`606631c`](https://github.com/jayb029/contentcam/commit/606631c36561c35dd7f183eba04b6fa0f91e171d) Merge branch 'main' of https://github.com/jayb029/contentcam
+- [`2692406`](https://github.com/jayb029/contentcam/commit/269240651253f1fc46375f8557ad5583c4bd8295) Bump build number to 20260723210225 [skip ci]
 
-[View the full changelog](https://github.com/jayb029/contentcam/releases/tag/nightly-20260723194737)
+[View the full changelog](https://github.com/jayb029/contentcam/releases/tag/nightly-20260723210225)
 ]]></description>
-            <enclosure url="https://github.com/jayb029/contentcam/releases/download/nightly-20260723194737/ContentCam-1.3-20260723194737.dmg" length="2050132" type="application/octet-stream" sparkle:edSignature="UxoKILGNP9baYmjSBYpMNlsfSzUcv7Dpo1QTWb8Tzdw3gprMWPmBla9nCkUHr8x1YDwFdLJlyKxigZqqNnepDA=="/>
+            <enclosure url="https://github.com/jayb029/contentcam/releases/download/nightly-20260723210225/ContentCam-1.3-20260723210225.dmg" length="3303911" type="application/octet-stream" sparkle:edSignature="PXgVHldRyPvW6ZORdrxMlWveTMG5AcoeBHFmn50B5AGCM2iIk541nCRPe0NKOxVRwx7ZrBMHvg8ix5+TK6fXBA=="/>
         </item>
     </channel>
 </rss>
