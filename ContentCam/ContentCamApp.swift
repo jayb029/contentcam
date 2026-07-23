@@ -32,6 +32,7 @@ struct ContentCamApp: App {
                 }
 
                 Divider()
+                ShowChangelogCommand()
                 CheckForUpdatesCommand(updates: updates)
             }
         }
@@ -40,6 +41,11 @@ struct ContentCamApp: App {
             PreferencesView(updates: updates)
         }
 
+        Window("ContentCam Changelog", id: "changelog") {
+            ChangelogView()
+        }
+        .defaultSize(width: 860, height: 620)
+
         Window("ContentCam — Clean Output", id: "clean-output") {
             OutputWindowView()
                 .environmentObject(studio)
@@ -47,6 +53,17 @@ struct ContentCamApp: App {
         .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 960, height: 540)
         .commandsRemoved()
+    }
+}
+
+private struct ShowChangelogCommand: View {
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        Button("Changelog…") {
+            InMemoryLog.shared.info("Changelog opened", category: "Updates")
+            openWindow(id: "changelog")
+        }
     }
 }
 

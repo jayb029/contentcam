@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PreferencesView: View {
     @ObservedObject var updates: UpdateController
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         Form {
@@ -22,10 +23,15 @@ struct PreferencesView: View {
                     updates.checkForUpdates()
                 }
                 .disabled(!updates.canCheckForUpdates)
+
+                Button("View Changelog…") {
+                    InMemoryLog.shared.info("Changelog opened from Settings", category: "Updates")
+                    openWindow(id: "changelog")
+                }
             }
         }
         .formStyle(.grouped)
-        .frame(width: 440, height: 240)
+        .frame(width: 440, height: 280)
     }
 
     private var updateChannel: Binding<UpdateChannel> {

@@ -29,7 +29,7 @@ enum UpdateChannel: String, CaseIterable, Identifiable {
         case .production:
             "https://github.com/jayb029/contentcam/releases/latest/download/appcast.xml"
         case .nightly:
-            "https://github.com/jayb029/contentcam/releases/download/nightly/appcast-nightly.xml"
+            "https://raw.githubusercontent.com/jayb029/contentcam/nightly-feed/appcast-nightly.xml"
         }
     }
 }
