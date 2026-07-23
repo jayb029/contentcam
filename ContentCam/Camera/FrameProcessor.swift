@@ -21,7 +21,7 @@ final class FrameProcessor {
 
         image = crop(
             image,
-            to: settings.outputFormat.aspectRatio,
+            to: settings.outputAspectRatio,
             scale: settings.cropScale,
             offset: settings.cropOffset
         )

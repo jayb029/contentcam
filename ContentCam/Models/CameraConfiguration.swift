@@ -4,6 +4,7 @@ enum OutputFormat: String, CaseIterable, Identifiable {
     case landscape
     case portrait
     case square
+    case custom
 
     var id: String { rawValue }
 
@@ -12,6 +13,7 @@ enum OutputFormat: String, CaseIterable, Identifiable {
         case .landscape: "Landscape"
         case .portrait: "Vertical"
         case .square: "Square"
+        case .custom: "Custom"
         }
     }
 
@@ -20,6 +22,7 @@ enum OutputFormat: String, CaseIterable, Identifiable {
         case .landscape: "16:9"
         case .portrait: "9:16"
         case .square: "1:1"
+        case .custom: "Size"
         }
     }
 
@@ -28,6 +31,7 @@ enum OutputFormat: String, CaseIterable, Identifiable {
         case .landscape: 16 / 9
         case .portrait: 9 / 16
         case .square: 1
+        case .custom: 16 / 9
         }
     }
 
@@ -36,6 +40,7 @@ enum OutputFormat: String, CaseIterable, Identifiable {
         case .landscape: "rectangle"
         case .portrait: "rectangle.portrait"
         case .square: "square"
+        case .custom: "aspectratio"
         }
     }
 }
@@ -75,7 +80,7 @@ enum FaceEffect: String, CaseIterable, Identifiable {
 }
 
 struct FrameSettings {
-    var outputFormat: OutputFormat = .landscape
+    var outputAspectRatio: CGFloat = 16 / 9
     var faceEffect: FaceEffect = .none
     var isMirrored = true
     var facePadding: CGFloat = 0.18

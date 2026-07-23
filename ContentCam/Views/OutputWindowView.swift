@@ -7,11 +7,11 @@ struct OutputWindowView: View {
     var body: some View {
         OutputFeed(
             camera: studio.camera,
-            aspectRatio: studio.outputFormat.aspectRatio,
+            aspectRatio: studio.outputAspectRatio,
             cornerRadius: studio.cornerRadius
         )
         .background {
-            CleanOutputWindowConfigurator(aspectRatio: studio.outputFormat.aspectRatio)
+            CleanOutputWindowConfigurator(aspectRatio: studio.outputAspectRatio)
         }
         .background(Color.clear)
         .ignoresSafeArea()

@@ -87,6 +87,14 @@ struct StudioView: View {
                                     }
                                 }
                             }
+
+                            if studio.outputFormat == .custom {
+                                CustomCanvasSizeEditor(
+                                    width: $studio.customCanvasWidth,
+                                    height: $studio.customCanvasHeight
+                                )
+                                .transition(.opacity.combined(with: .move(edge: .top)))
+                            }
                         }
                     }
 
@@ -113,7 +121,7 @@ struct StudioView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Studio")
                     .font(.system(size: 15, weight: .semibold))
-                Text("\(studio.outputFormat.ratioLabel) processed preview")
+                Text("\(studio.outputRatioLabel) processed preview")
                     .font(.system(size: 11))
                     .foregroundStyle(.secondary)
             }
@@ -155,7 +163,7 @@ struct StudioView: View {
             CameraPreview(
                 camera: studio.camera,
                 showGuides: studio.showGuides,
-                aspectRatio: studio.outputFormat.aspectRatio,
+                aspectRatio: studio.outputAspectRatio,
                 cornerRadius: studio.cornerRadius,
                 cropScale: $studio.cropScale,
                 cropOffset: $studio.cropOffset,
@@ -267,6 +275,42 @@ struct StudioView: View {
             .padding(18)
         }
         .background(Color(nsColor: NSColor(calibratedWhite: 0.095, alpha: 1)))
+    }
+}
+
+private struct CustomCanvasSizeEditor: View {
+    @Binding var width: Int
+    @Binding var height: Int
+
+    var body: some View {
+        HStack(spacing: 6) {
+            dimensionField("W", value: $width)
+
+            Text("×")
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(.tertiary)
+
+            dimensionField("H", value: $height)
+        }
+        .padding(.horizontal, 8)
+        .padding(.bottom, 2)
+    }
+
+    private func dimensionField(_ label: String, value: Binding<Int>) -> some View {
+        HStack(spacing: 4) {
+            Text(label)
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(.tertiary)
+
+            TextField("", value: value, format: .number.grouping(.never))
+                .textFieldStyle(.plain)
+                .font(.system(size: 11, weight: .medium).monospacedDigit())
+                .multilineTextAlignment(.trailing)
+                .frame(maxWidth: .infinity)
+        }
+        .padding(.horizontal, 7)
+        .frame(height: 28)
+        .background(.white.opacity(0.055), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
     }
 }
 
