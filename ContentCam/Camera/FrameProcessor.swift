@@ -5,7 +5,7 @@ import Vision
 
 final class FrameProcessor {
     private let context = CIContext(options: [
-        .cacheIntermediates: true,
+        .cacheIntermediates: false,
         .priorityRequestLow: false
     ])
     private var frameNumber = 0

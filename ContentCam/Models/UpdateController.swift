@@ -27,9 +27,9 @@ enum UpdateChannel: String, CaseIterable, Identifiable {
     fileprivate var feedURLString: String {
         switch self {
         case .production:
-            "https://github.com/jayb029/mac-native-content-camera/releases/latest/download/appcast.xml"
+            "https://github.com/jayb029/contentcam/releases/latest/download/appcast.xml"
         case .nightly:
-            "https://github.com/jayb029/mac-native-content-camera/releases/download/nightly/appcast-nightly.xml"
+            "https://github.com/jayb029/contentcam/releases/download/nightly/appcast-nightly.xml"
         }
     }
 }
