@@ -19,6 +19,7 @@
 		A1000000000000000000000A /* UpdateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* UpdateController.swift */; };
 		A1000000000000000000000B /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000002 /* Sparkle */; };
 		A1000000000000000000000C /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000F /* PreferencesView.swift */; };
+		A1000000000000000000000D /* InMemoryLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* InMemoryLog.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,7 @@
 		A2000000000000000000000D /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		A2000000000000000000000E /* UpdateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateController.swift; sourceTree = "<group>"; };
 		A2000000000000000000000F /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
+		A20000000000000000000010 /* InMemoryLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InMemoryLog.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 				A20000000000000000000002 /* CameraConfiguration.swift */,
 				A20000000000000000000003 /* StudioModel.swift */,
 				A2000000000000000000000E /* UpdateController.swift */,
+				A20000000000000000000010 /* InMemoryLog.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -197,6 +200,7 @@
 				A10000000000000000000009 /* OnboardingView.swift in Sources */,
 				A1000000000000000000000A /* UpdateController.swift in Sources */,
 				A1000000000000000000000C /* PreferencesView.swift in Sources */,
+				A1000000000000000000000D /* InMemoryLog.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -47,6 +47,8 @@ final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate {
 
         super.init()
 
+        InMemoryLog.shared.info("Updater initialized on the \(channel.rawValue) channel", category: "Updates")
+
         updaterController = SPUStandardUpdaterController(
             startingUpdater: false,
             updaterDelegate: self,
@@ -60,12 +62,14 @@ final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate {
     func start() {
         guard !hasStarted else { return }
         hasStarted = true
+        InMemoryLog.shared.info("Updater started", category: "Updates")
         updaterController.startUpdater()
     }
 
     func select(_ channel: UpdateChannel) {
         guard self.channel != channel else { return }
         self.channel = channel
+        InMemoryLog.shared.info("Update channel changed to \(channel.rawValue)", category: "Updates")
         UserDefaults.standard.set(channel.rawValue, forKey: UpdateChannel.defaultsKey)
         if hasStarted {
             updaterController.updater.resetUpdateCycleAfterShortDelay()
@@ -73,6 +77,7 @@ final class UpdateController: NSObject, ObservableObject, SPUUpdaterDelegate {
     }
 
     func checkForUpdates() {
+        InMemoryLog.shared.info("Manual update check requested", category: "Updates")
         updaterController.checkForUpdates(nil)
     }
 

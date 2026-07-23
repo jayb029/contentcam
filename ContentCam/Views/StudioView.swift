@@ -29,8 +29,10 @@ struct StudioView: View {
         .background(Color(nsColor: NSColor(calibratedWhite: 0.075, alpha: 1)))
         .preferredColorScheme(.dark)
         .onAppear {
+            InMemoryLog.shared.info("Studio window appeared", category: "Lifecycle")
             studio.start()
             if !hasCompletedOnboarding {
+                InMemoryLog.shared.info("First-run guide presented", category: "Guide")
                 isShowingGuide = true
             } else {
                 updates.start()
@@ -140,6 +142,7 @@ struct StudioView: View {
             Spacer()
 
             Button {
+                InMemoryLog.shared.info("Guide opened", category: "Guide")
                 isShowingGuide = true
             } label: {
                 Label("Guide", systemImage: "questionmark.circle")
@@ -150,6 +153,7 @@ struct StudioView: View {
             .keyboardShortcut("/", modifiers: [.command])
 
             Button {
+                InMemoryLog.shared.info("Clean Output opened", category: "Output")
                 openWindow(id: "clean-output")
             } label: {
                 Label("Open Clean Output", systemImage: "macwindow.on.rectangle")
@@ -164,6 +168,7 @@ struct StudioView: View {
     }
 
     private func completeOnboarding() {
+        InMemoryLog.shared.info("Guide completed", category: "Guide")
         hasCompletedOnboarding = true
         isShowingGuide = false
         updates.start()

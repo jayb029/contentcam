@@ -6,6 +6,10 @@ struct ContentCamApp: App {
     @StateObject private var studio = StudioModel()
     @StateObject private var updates = UpdateController()
 
+    init() {
+        InMemoryLog.shared.info("Application initialized", category: "Lifecycle")
+    }
+
     var body: some Scene {
         WindowGroup("ContentCam") {
             StudioView()
@@ -19,7 +23,16 @@ struct ContentCamApp: App {
             AboutCommands()
             PreferencesCommands()
 
-            CommandGroup(after: .help) {
+            CommandGroup(replacing: .help) {
+                Button("ContentCam Documentation") {
+                    ContentCamHelp.openDocumentation()
+                }
+
+                Button("Export Logs…") {
+                    ContentCamHelp.exportLogs()
+                }
+
+                Divider()
                 CheckForUpdatesCommand(updates: updates)
             }
         }

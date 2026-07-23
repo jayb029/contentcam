@@ -15,7 +15,10 @@ struct OutputWindowView: View {
         }
         .background(Color.clear)
         .ignoresSafeArea()
-        .onAppear { studio.start() }
+        .onAppear {
+            InMemoryLog.shared.info("Clean Output window appeared", category: "Output")
+            studio.start()
+        }
     }
 }
 

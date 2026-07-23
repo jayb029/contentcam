@@ -23,6 +23,8 @@ ContentCam requires macOS 14 or newer.
 
 The first-run guide lets you preview three practical starting points—**Meeting ready**, **Vertical creator**, and **Privacy first**—and choose Production or Nightly updates. Open the guide again anytime with the **Guide** button in the Studio toolbar or `Command-/`.
 
+For usage, troubleshooting, update, and diagnostic-log details, open **Help > ContentCam Documentation** or read [the documentation](DOCUMENTATION.md).
+
 ## Use it with OBS and other camera apps
 
 1. Configure your canvas, face cover, and corner radius in ContentCam.
